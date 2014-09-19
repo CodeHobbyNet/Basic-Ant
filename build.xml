@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<project default="main">
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
+
+	<target name="main" depends="compile, compressUnix, compress">
+	</target>
+
+	<target name="compile">
+		<javac includeantruntime="false" srcdir="."/>
+	</target>
+
+	<target name="compress" unless="isUnix">
+		<echo>Building the .jar file for non-Unix systems.</echo>
+		<jar jarfile="HelloWorld.jar" basedir="." includes="*.class">
+			<manifest>
+				<attribute name="Main-Class" value="HelloWorld"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="compressUnix" if="isUnix">
+		<echo>Building the .jar file for Unix systems.</echo>
+		<jar jarfile="HelloWorld.jar" basedir="." includes="*.class">
+			<manifest>
+				<attribute name="Main-Class" value="HelloWorld"/>
+			</manifest>
+		</jar>
+		<chmod dir="." perm="a+x" includes="HelloWorld.jar"/>
+	</target>
+
+	<target name="clean">
+		<echo>Removing all class files.</echo>
+		<delete>
+			<fileset dir="." includes="*.class"/>
+		</delete>
+	</target>
+
+	<target name="cleanAll">
+		<echo>Removing all class files and the jar file.</echo>
+		<delete>
+			<fileset dir="." includes="*.class HelloWorld.jar"/>
+		</delete>
+	</target>
+</project>
